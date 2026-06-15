@@ -1,0 +1,6 @@
+name: InputEngineExample
+version: '${version}'
+main: dev.darkblade.mod.input_engine.example.ExamplePlugin
+api-version: '1.21'
+depend: [InputEngine]
+description: Example plugin consuming the InputEngine server API

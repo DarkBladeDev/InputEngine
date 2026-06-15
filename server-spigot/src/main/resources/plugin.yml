@@ -1,0 +1,6 @@
+name: InputEngine
+version: "${version}"
+main: dev.darkblade.mod.input_engine.server.InputEnginePlugin
+api-version: "1.21"
+authors: [DarkBladeDev]
+description: Server-side handler for InputEngine custom payloads

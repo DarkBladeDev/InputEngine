@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "dev.darkblade.mod.input_engine.client.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"KeyboardInputMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}
