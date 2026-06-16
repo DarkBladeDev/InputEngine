@@ -20,6 +20,7 @@ public class InputEngineClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        CategoryFixer.fix();
         ClientPlayNetworking.registerGlobalReceiver(KeybindConfigPayload.ID, (payload, context) -> {
             context.client().execute(() -> {
                 // Register dynamically received keys
