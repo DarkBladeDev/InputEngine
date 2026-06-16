@@ -14,7 +14,7 @@ import java.util.Map;
 public class TranslationStorageMixin {
 
     @Inject(method = "get", at = @At("HEAD"), cancellable = true)
-    private void onGetTranslation(String key, CallbackInfoReturnable<String> cir) {
+    private void onGetTranslation(String key, String fallback, CallbackInfoReturnable<String> cir) {
         if (InputEngineClient.DYNAMIC_TRANSLATIONS.containsKey(key)) {
             Map<String, String> translations = InputEngineClient.DYNAMIC_TRANSLATIONS.get(key);
             String currentLang = "en_us";
