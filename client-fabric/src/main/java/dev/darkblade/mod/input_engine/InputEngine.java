@@ -1,5 +1,6 @@
 package dev.darkblade.mod.input_engine;
 
+import dev.darkblade.mod.input_engine.client.network.KeybindConfigPayload;
 import dev.darkblade.mod.input_engine.client.network.KeystrokePayload;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -13,5 +14,6 @@ public class InputEngine implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		PayloadTypeRegistry.playC2S().register(KeystrokePayload.ID, KeystrokePayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(KeybindConfigPayload.ID, KeybindConfigPayload.CODEC);
 	}
 }

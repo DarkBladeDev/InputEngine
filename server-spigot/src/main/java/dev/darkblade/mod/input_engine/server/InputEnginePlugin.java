@@ -1,16 +1,26 @@
 package dev.darkblade.mod.input_engine.server;
 
-import dev.darkblade.mod.input_engine.common.KeyAction;
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import dev.darkblade.mod.input_engine.common.NetworkConstants;
+import dev.darkblade.mod.input_engine.server.api.KeybindData;
 import dev.darkblade.mod.input_engine.server.api.PlayerKeyPressEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
-import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
-public class InputEnginePlugin extends JavaPlugin implements PluginMessageListener {
+public class InputEnginePlugin extends JavaPlugin implements PluginMessageListener, Listener {
+
+    private final List<KeybindData> registeredKeys = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -24,16 +34,47 @@ public class InputEnginePlugin extends JavaPlugin implements PluginMessageListen
 
         getServer().getMessenger().registerOutgoingPluginChannel(
                 this,
-                NetworkConstants.FULL_CHANNEL
+                NetworkConstants.FULL_CONFIG_CHANNEL
         );
 
+        getServer().getPluginManager().registerEvents(this, this);
+
         getLogger().info("Registered messaging channel: " + NetworkConstants.FULL_CHANNEL);
+        getLogger().info("Registered config channel: " + NetworkConstants.FULL_CONFIG_CHANNEL);
     }
 
     @Override
     public void onDisable() {
         getServer().getMessenger().unregisterIncomingPluginChannel(this);
         getServer().getMessenger().unregisterOutgoingPluginChannel(this);
+    }
+
+    public void registerExpectedKey(String actionId, int defaultKeyCode, String translationKey) {
+        registeredKeys.add(new KeybindData(actionId, defaultKeyCode, translationKey));
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        if (registeredKeys.isEmpty()) return;
+
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            ByteArrayDataOutput out = ByteStreams.newDataOutput();
+            out.writeInt(registeredKeys.size());
+            
+            for (KeybindData data : registeredKeys) {
+                byte[] idBytes = data.actionId().getBytes(StandardCharsets.UTF_8);
+                out.writeInt(idBytes.length);
+                out.write(idBytes);
+
+                out.writeInt(data.defaultKey());
+
+                byte[] transBytes = data.translationKey().getBytes(StandardCharsets.UTF_8);
+                out.writeInt(transBytes.length);
+                out.write(transBytes);
+            }
+            
+            event.getPlayer().sendPluginMessage(this, NetworkConstants.FULL_CONFIG_CHANNEL, out.toByteArray());
+        }, 20L); // Delay to ensure client is ready
     }
 
     @Override
@@ -43,18 +84,17 @@ public class InputEnginePlugin extends JavaPlugin implements PluginMessageListen
         }
 
         try {
-            ByteBuffer buffer = ByteBuffer.wrap(message);
-            int actionId = buffer.getInt();
-            boolean isPressed = buffer.get() != 0;
-
-            KeyAction action = KeyAction.fromId(actionId);
-            if (action == null) {
-                getLogger().warning("Received unknown KeyAction ID " + actionId + " from " + player.getName());
-                return;
-            }
+            ByteArrayDataInput in = ByteStreams.newDataInput(message);
+            
+            int idLen = in.readInt();
+            byte[] idBytes = new byte[idLen];
+            in.readFully(idBytes);
+            String actionId = new String(idBytes, StandardCharsets.UTF_8);
+            
+            boolean isPressed = in.readBoolean();
 
             Bukkit.getScheduler().runTask(this, () -> {
-                PlayerKeyPressEvent event = new PlayerKeyPressEvent(player, action, isPressed);
+                PlayerKeyPressEvent event = new PlayerKeyPressEvent(player, actionId, isPressed);
                 Bukkit.getPluginManager().callEvent(event);
             });
 

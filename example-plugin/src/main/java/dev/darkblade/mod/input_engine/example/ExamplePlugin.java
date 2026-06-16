@@ -13,12 +13,20 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
     public void onEnable() {
         getLogger().info("InputEngine Example Plugin is enabling...");
         getServer().getPluginManager().registerEvents(this, this);
+
+        // Register a test key
+        dev.darkblade.mod.input_engine.server.InputEnginePlugin inputPlugin = 
+            (dev.darkblade.mod.input_engine.server.InputEnginePlugin) getServer().getPluginManager().getPlugin("InputEngine");
+        
+        if (inputPlugin != null) {
+            inputPlugin.registerExpectedKey("example:dash", 86, "key.example.dash"); // V
+        }
     }
 
     @EventHandler
     public void onPlayerKeyPress(PlayerKeyPressEvent event) {
         Player player = event.getPlayer();
-        String actionName = event.getAction().name();
+        String actionName = event.getActionId();
         String actionState = event.isPressed() ? "pressed" : "released";
 
         String message = ChatColor.GREEN + "You " + actionState + " the key for: " + ChatColor.YELLOW + actionName;

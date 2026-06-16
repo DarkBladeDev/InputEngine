@@ -6,18 +6,25 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-public record KeystrokePayload(int actionId, boolean isPressed) implements CustomPayload {
+import net.minecraft.network.PacketByteBuf;
+import java.nio.charset.StandardCharsets;
+
+public record KeystrokePayload(String actionId, boolean isPressed) implements CustomPayload {
     public static final CustomPayload.Id<KeystrokePayload> ID = new CustomPayload.Id<>(Identifier.of(NetworkConstants.CHANNEL_NAMESPACE, NetworkConstants.CHANNEL_PATH));
 
-    public static final PacketCodec<ByteBuf, KeystrokePayload> CODEC = new PacketCodec<ByteBuf, KeystrokePayload>() {
+    public static final PacketCodec<PacketByteBuf, KeystrokePayload> CODEC = new PacketCodec<PacketByteBuf, KeystrokePayload>() {
         @Override
-        public KeystrokePayload decode(ByteBuf buf) {
-            return new KeystrokePayload(buf.readInt(), buf.readBoolean());
+        public KeystrokePayload decode(PacketByteBuf buf) {
+            int len = buf.readInt();
+            String actionId = buf.readCharSequence(len, StandardCharsets.UTF_8).toString();
+            return new KeystrokePayload(actionId, buf.readBoolean());
         }
 
         @Override
-        public void encode(ByteBuf buf, KeystrokePayload payload) {
-            buf.writeInt(payload.actionId());
+        public void encode(PacketByteBuf buf, KeystrokePayload payload) {
+            byte[] idBytes = payload.actionId().getBytes(StandardCharsets.UTF_8);
+            buf.writeInt(idBytes.length);
+            buf.writeBytes(idBytes);
             buf.writeBoolean(payload.isPressed());
         }
     };
