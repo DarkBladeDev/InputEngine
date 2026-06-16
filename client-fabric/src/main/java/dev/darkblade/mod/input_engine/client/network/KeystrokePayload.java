@@ -1,7 +1,6 @@
 package dev.darkblade.mod.input_engine.client.network;
 
 import dev.darkblade.mod.input_engine.common.NetworkConstants;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
