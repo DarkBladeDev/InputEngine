@@ -1,0 +1,12 @@
+modLoader="javafml"
+loaderVersion="[9,)"
+license="MIT"
+
+[[mods]]
+modId="input_engine"
+version="${version}"
+displayName="Input Engine"
+description="Input Engine mod for NeoForge"
+
+[[mixins]]
+config="input-engine.mixins.json"

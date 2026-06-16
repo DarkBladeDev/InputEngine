@@ -4,6 +4,14 @@ pluginManagement {
 			name = "Fabric"
 			url = uri("https://maven.fabricmc.net/")
 		}
+		maven {
+			name = "NeoForge"
+			url = uri("https://maven.neoforged.net/releases")
+		}
+		maven {
+			name = "Forge"
+			url = uri("https://maven.minecraftforge.net/")
+		}
 		mavenCentral()
 		gradlePluginPortal()
 	}
@@ -17,5 +25,6 @@ rootProject.name = "input-engine"
 
 include("common")
 include("client-fabric")
+include("client-neoforge")
 include("server-spigot")
 include("example-plugin")

@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "dev.darkblade.mod.input_engine.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+  ],
+  "client": [
+    "OptionsAccessor",
+    "TranslationStorageMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
