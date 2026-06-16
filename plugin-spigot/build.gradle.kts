@@ -2,6 +2,8 @@ plugins {
     id("java")
 }
 
+version = providers.gradleProperty("spigot_version").get()
+
 base {
     archivesName.set("input-engine-spigot")
 }

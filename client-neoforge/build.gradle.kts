@@ -3,6 +3,8 @@ plugins {
     id("net.neoforged.moddev") version "2.0.141"
 }
 
+version = providers.gradleProperty("neoforge_version").get()
+
 base {
     archivesName.set("input-engine-neoforge")
 }

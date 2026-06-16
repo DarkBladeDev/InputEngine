@@ -26,5 +26,5 @@ rootProject.name = "input-engine"
 include("common")
 include("client-fabric")
 include("client-neoforge")
-include("server-spigot")
+include("plugin-spigot")
 include("example-plugin")

@@ -2,6 +2,8 @@ plugins {
 	id("net.fabricmc.fabric-loom-remap")
 }
 
+version = providers.gradleProperty("fabric_version").get()
+
 base {
     archivesName.set("input-engine-fabric")
 }

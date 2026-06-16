@@ -8,7 +8,7 @@ base {
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT")
-    compileOnly(project(":server-spigot"))
+    compileOnly(project(":plugin-spigot"))
     compileOnly(project(":common"))
 }
 
