@@ -24,7 +24,18 @@ public record KeybindConfigPayload(List<KeybindData> keys) implements CustomPayl
                 int defaultKey = buf.readInt();
                 int transLen = buf.readInt();
                 String transKey = buf.readCharSequence(transLen, StandardCharsets.UTF_8).toString();
-                keys.add(new KeybindData(actionId, defaultKey, transKey));
+                
+                int mapSize = buf.readInt();
+                java.util.Map<String, String> map = new java.util.HashMap<>();
+                for (int j = 0; j < mapSize; j++) {
+                    int kLen = buf.readInt();
+                    String k = buf.readCharSequence(kLen, StandardCharsets.UTF_8).toString();
+                    int vLen = buf.readInt();
+                    String v = buf.readCharSequence(vLen, StandardCharsets.UTF_8).toString();
+                    map.put(k, v);
+                }
+                
+                keys.add(new KeybindData(actionId, defaultKey, transKey, map));
             }
             return new KeybindConfigPayload(keys);
         }
@@ -42,6 +53,17 @@ public record KeybindConfigPayload(List<KeybindData> keys) implements CustomPayl
                 byte[] transBytes = key.translationKey().getBytes(StandardCharsets.UTF_8);
                 buf.writeInt(transBytes.length);
                 buf.writeBytes(transBytes);
+                
+                buf.writeInt(key.translations().size());
+                for (java.util.Map.Entry<String, String> entry : key.translations().entrySet()) {
+                    byte[] kBytes = entry.getKey().getBytes(StandardCharsets.UTF_8);
+                    buf.writeInt(kBytes.length);
+                    buf.writeBytes(kBytes);
+                    
+                    byte[] vBytes = entry.getValue().getBytes(StandardCharsets.UTF_8);
+                    buf.writeInt(vBytes.length);
+                    buf.writeBytes(vBytes);
+                }
             }
         }
     };
@@ -51,5 +73,5 @@ public record KeybindConfigPayload(List<KeybindData> keys) implements CustomPayl
         return ID;
     }
 
-    public record KeybindData(String actionId, int defaultKey, String translationKey) {}
+    public record KeybindData(String actionId, int defaultKey, String translationKey, java.util.Map<String, String> translations) {}
 }

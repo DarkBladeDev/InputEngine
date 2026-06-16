@@ -17,6 +17,7 @@ public class InputEngineClient implements ClientModInitializer {
 
     private final Map<String, KeyBinding> dynamicKeyBindings = new HashMap<>();
     private final Map<String, Boolean> keyStates = new HashMap<>();
+    public static final Map<String, Map<String, String>> DYNAMIC_TRANSLATIONS = new HashMap<>();
 
     @Override
     public void onInitializeClient() {
@@ -34,6 +35,10 @@ public class InputEngineClient implements ClientModInitializer {
                         );
                         dynamicKeyBindings.put(data.actionId(), keyBinding);
                         keyStates.put(data.actionId(), false);
+                        
+                        if (data.translations() != null && !data.translations().isEmpty()) {
+                            DYNAMIC_TRANSLATIONS.put(data.translationKey(), data.translations());
+                        }
                         
                         // Force update Minecraft options to show new keys in menu if already initialized
                         MinecraftClient client = MinecraftClient.getInstance();

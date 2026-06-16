@@ -50,7 +50,11 @@ public class InputEnginePlugin extends JavaPlugin implements PluginMessageListen
     }
 
     public void registerExpectedKey(String actionId, int defaultKeyCode, String translationKey) {
-        registeredKeys.add(new KeybindData(actionId, defaultKeyCode, translationKey));
+        registerExpectedKey(actionId, defaultKeyCode, translationKey, java.util.Map.of());
+    }
+
+    public void registerExpectedKey(String actionId, int defaultKeyCode, String translationKey, java.util.Map<String, String> translations) {
+        registeredKeys.add(new KeybindData(actionId, defaultKeyCode, translationKey, translations));
     }
 
     @EventHandler
@@ -71,6 +75,17 @@ public class InputEnginePlugin extends JavaPlugin implements PluginMessageListen
                 byte[] transBytes = data.translationKey().getBytes(StandardCharsets.UTF_8);
                 out.writeInt(transBytes.length);
                 out.write(transBytes);
+
+                out.writeInt(data.translations().size());
+                for (java.util.Map.Entry<String, String> entry : data.translations().entrySet()) {
+                    byte[] kBytes = entry.getKey().getBytes(StandardCharsets.UTF_8);
+                    out.writeInt(kBytes.length);
+                    out.write(kBytes);
+
+                    byte[] vBytes = entry.getValue().getBytes(StandardCharsets.UTF_8);
+                    out.writeInt(vBytes.length);
+                    out.write(vBytes);
+                }
             }
             
             event.getPlayer().sendPluginMessage(this, NetworkConstants.FULL_CONFIG_CHANNEL, out.toByteArray());

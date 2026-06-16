@@ -19,7 +19,11 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
             (dev.darkblade.mod.input_engine.server.InputEnginePlugin) getServer().getPluginManager().getPlugin("InputEngine");
         
         if (inputPlugin != null) {
-            inputPlugin.registerExpectedKey("example:dash", 86, "key.example.dash"); // V
+            inputPlugin.registerExpectedKey("example:dash", 86, "key.example.dash", java.util.Map.of(
+                "en_us", "Dash",
+                "es_es", "Embestida",
+                "es_mx", "Embestida"
+            )); // V
         }
     }
 

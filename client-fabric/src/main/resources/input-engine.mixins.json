@@ -3,8 +3,8 @@
 	"package": "dev.darkblade.mod.input_engine.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin",
-		"GameOptionsAccessor"
+		"GameOptionsAccessor",
+		"TranslationStorageMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
