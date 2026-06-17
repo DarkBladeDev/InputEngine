@@ -2,7 +2,8 @@ plugins {
     id("java")
 }
 
-version = providers.gradleProperty("spigot_version").get()
+val gitBranch: String by rootProject.extra
+version = "${providers.gradleProperty("spigot_version").get()}-$gitBranch"
 
 base {
     archivesName.set("input-engine-spigot")

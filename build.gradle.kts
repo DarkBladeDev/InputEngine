@@ -2,6 +2,18 @@ plugins {
 	id("java")
 }
 
+val gitBranch: String by extra {
+    try {
+        val process = ProcessBuilder("git", "rev-parse", "--abbrev-ref", "HEAD").start()
+        process.inputStream.bufferedReader().readText().trim().let {
+            if (it == "HEAD" || it.isEmpty()) "unknown" else it
+        }
+    } catch (e: Exception) {
+        "unknown"
+    }
+}
+
+
 allprojects {
 	group = providers.gradleProperty("maven_group").get()
 
