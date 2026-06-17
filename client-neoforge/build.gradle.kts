@@ -10,7 +10,7 @@ base {
 }
 
 neoForge {
-    version = providers.gradleProperty("neoforge_version").get()
+    version = providers.gradleProperty("neoforge_loader_version").get()
 
 
     mods {
