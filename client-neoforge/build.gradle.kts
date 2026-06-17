@@ -3,7 +3,8 @@ plugins {
     id("net.neoforged.moddev") version "2.0.141"
 }
 
-version = providers.gradleProperty("neoforge_version").get()
+val gitBranch: String by rootProject.extra
+version = "${providers.gradleProperty("neoforge_version").get()}-$gitBranch"
 
 base {
     archivesName.set("input-engine-neoforge")
