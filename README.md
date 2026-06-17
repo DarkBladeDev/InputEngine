@@ -12,6 +12,8 @@
 
 ## Project Structure
 
+[![CodeFactor](https://www.codefactor.io/repository/github/darkbladedev/inputengine/badge)](https://www.codefactor.io/repository/github/darkbladedev/inputengine)
+
 This repository is split into several subprojects:
 
 * **`client-fabric`**: The Fabric mod that runs on the player's client.
