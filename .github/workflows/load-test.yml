@@ -1,0 +1,61 @@
+name: Load Test CI
+
+on:
+  push:
+    branches: [ "main", "1.21.8", "1.21.4", "1.21.1" ]
+  pull_request:
+    branches: [ "main", "1.21.8", "1.21.4", "1.21.1" ]
+  workflow_dispatch:
+
+jobs:
+  load-test:
+    name: Load Test - ${{ matrix.modloader }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        modloader: [fabric, neoforge]
+        java: [21]
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: '${{ matrix.java }}'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Dar permisos de ejecución a Gradle
+        run: chmod +x gradlew
+
+      - name: Construir proyecto (Build)
+        run: ./gradlew :client-${{ matrix.modloader }}:build
+
+      - name: Preparar mod para el test
+        run: |
+          mkdir -p run/mods
+          # Copiamos el mod compilado (asumiendo que está en build/libs)
+          cp client-${{ matrix.modloader }}/build/libs/*-dev.jar run/mods/ 2>/dev/null || cp client-${{ matrix.modloader }}/build/libs/*.jar run/mods/
+
+      - name: Determinar versión de Minecraft
+        id: get_version
+        run: |
+          # Si la rama parece una versión (ej. 1.20, 1.21.1), usamos el nombre de la rama
+          if [[ "${{ github.ref_name }}" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+            echo "MC_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+          else
+            # Si estamos en main, master u otra rama, leemos la versión del gradle.properties
+            echo "MC_VERSION=$(grep 'minecraft_version' gradle.properties | cut -d'=' -f2 | tr -d '\r')" >> $GITHUB_ENV
+          fi
+
+      - name: Ejecutar Cliente Headless (MC-Runtime-Test)
+        uses: headlesshq/mc-runtime-test@4.4.0
+        with:
+          mc: ${{ env.MC_VERSION }}
+          modloader: ${{ matrix.modloader }}
+          regex: .*${{ matrix.modloader }}.*
+          java: ${{ matrix.java }}
+          mc-runtime-test: ${{ matrix.modloader }}
