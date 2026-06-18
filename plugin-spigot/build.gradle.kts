@@ -6,7 +6,7 @@ val gitBranch: String by rootProject.extra
 version = "${providers.gradleProperty("spigot_version").get()}-$gitBranch"
 
 base {
-    archivesName.set("input-engine-spigot")
+    archivesName.set("InputEngine-spigot")
 }
 
 dependencies {

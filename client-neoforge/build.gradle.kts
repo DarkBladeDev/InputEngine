@@ -7,7 +7,7 @@ val gitBranch: String by rootProject.extra
 version = "${providers.gradleProperty("neoforge_version").get()}-$gitBranch"
 
 base {
-    archivesName.set("input-engine-neoforge")
+    archivesName.set("InputEngine-neoforge")
 }
 
 neoForge {
