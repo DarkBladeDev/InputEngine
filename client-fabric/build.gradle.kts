@@ -6,7 +6,7 @@ val gitBranch: String by rootProject.extra
 version = "${providers.gradleProperty("fabric_version").get()}-$gitBranch"
 
 base {
-    archivesName.set("input-engine-fabric")
+    archivesName.set("InputEngine-fabric")
 }
 
 dependencies {
