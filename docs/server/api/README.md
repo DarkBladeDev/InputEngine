@@ -2,9 +2,42 @@
 
 This documentation details how to use the InputEngine API within your own Spigot plugins to register custom keybinds and listen for player inputs.
 
+## Importing the API in your project
+
+First, you need to import the server api from their latest JitPack release.
+[![](https://jitpack.io/v/DarkBladeDev/InputEngine.svg)](https://jitpack.io/#DarkBladeDev/InputEngine)
+
+From gradle
+```gradle.properties
+    repositories {
+			mavenCentral()
+			maven { url 'https://jitpack.io' }
+		}
+
+	dependencies {
+	        implementation 'com.github.DarkBladeDev:InputEngine:main-SNAPSHOT'
+	}
+```
+
+From maven
+```pom.xml
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
+	<dependency>
+	    <groupId>com.github.DarkBladeDev</groupId>
+	    <artifactId>InputEngine</artifactId>
+	    <version>main-SNAPSHOT</version>
+	</dependency>
+```
+
 ## Getting the Plugin Instance
 
-First, you need to obtain the instance of the InputEngine plugin to register your keys:
+Now, you need to obtain the instance of the InputEngine plugin to register your keys:
 
 ```java
 import dev.darkblade.mod.input_engine.server.InputEnginePlugin;
