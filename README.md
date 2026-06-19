@@ -18,7 +18,7 @@ This repository is split into several subprojects:
 
 * **`client-fabric`**: The Fabric mod that runs on the player's client.
 * **`client-neoforge`**: The NeoForge mod that runs on the player's client.
-* **`server-spigot`**: The Bukkit/Spigot plugin that runs on the server. It listens to the plugin messaging channel and fires a Bukkit `PlayerKeyPressEvent`.
+* **`plugin-spigot`**: The Bukkit/Spigot plugin that runs on the server. It listens to the plugin messaging channel and fires a Bukkit `PlayerKeyPressEvent`.
 * **`common`**: Shared constants, payloads, and enums used by both the clients and the server.
 * **`example-plugin`**: A lightweight Spigot plugin demonstrating how to listen to the `PlayerKeyPressEvent`.
 
@@ -32,13 +32,13 @@ This repository is split into several subprojects:
 3. If using Fabric, ensure you have the [Fabric API](https://modrinth.com/mod/fabric-api) installed.
 
 ### For Server Owners (Server)
-1. Download the `server-spigot` jar.
+1. Download the [plugin-spigot](https://modrinth.com/plugin/input-engine/versions?l=spigot) jar.
 2. Place it in your Spigot/Paper server's `plugins/` folder.
 3. Restart your server.
 
 ## For Developers (API Usage)
 
-If you are developing a Spigot plugin and want to react to a player's key press, simply add `server-spigot` as a dependency and listen to the `PlayerKeyPressEvent`:
+If you are developing a Spigot plugin and want to react to a player's key press, simply add `plugin-spigot` as a dependency and listen to the `PlayerKeyPressEvent`:
 
 ```java
 import dev.darkblade.mod.input_engine.server.api.PlayerKeyPressEvent;
