@@ -29,11 +29,13 @@ From maven
 		</repository>
 	</repositories>
 
-	<dependency>
-	    <groupId>com.github.DarkBladeDev</groupId>
-	    <artifactId>InputEngine</artifactId>
-	    <version>main-SNAPSHOT</version>
-	</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>com.github.DarkBladeDev</groupId>
+            <artifactId>InputEngine</artifactId>
+            <version>main-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 ```
 
 ## Getting the Plugin Instance
