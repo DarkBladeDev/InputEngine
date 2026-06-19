@@ -5,6 +5,7 @@ This documentation details how to use the InputEngine API within your own Spigot
 ## Importing the API in your project
 
 First, you need to import the server api from their latest JitPack release.
+
 [![](https://jitpack.io/v/DarkBladeDev/InputEngine.svg)](https://jitpack.io/#DarkBladeDev/InputEngine)
 
 From gradle
