@@ -4,7 +4,8 @@
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"GameOptionsAccessor",
-		"TranslationStorageMixin"
+		"TranslationStorageMixin",
+		"MouseMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

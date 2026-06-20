@@ -35,7 +35,14 @@ public record KeybindConfigPayload(List<KeybindData> keys) implements CustomPayl
                     map.put(k, v);
                 }
                 
-                keys.add(new KeybindData(actionId, defaultKey, transKey, map));
+                boolean hasShift = buf.readBoolean();
+                boolean hasCtrl = buf.readBoolean();
+                boolean hasAlt = buf.readBoolean();
+                boolean requiresDoubleTap = buf.readBoolean();
+                boolean trackHoldDuration = buf.readBoolean();
+                boolean isPartOfCombo = buf.readBoolean();
+                
+                keys.add(new KeybindData(actionId, defaultKey, transKey, map, hasShift, hasCtrl, hasAlt, requiresDoubleTap, trackHoldDuration, isPartOfCombo));
             }
             return new KeybindConfigPayload(keys);
         }
@@ -64,6 +71,13 @@ public record KeybindConfigPayload(List<KeybindData> keys) implements CustomPayl
                     buf.writeInt(vBytes.length);
                     buf.writeBytes(vBytes);
                 }
+                
+                buf.writeBoolean(key.hasShift());
+                buf.writeBoolean(key.hasCtrl());
+                buf.writeBoolean(key.hasAlt());
+                buf.writeBoolean(key.requiresDoubleTap());
+                buf.writeBoolean(key.trackHoldDuration());
+                buf.writeBoolean(key.isPartOfCombo());
             }
         }
     };
@@ -73,5 +87,5 @@ public record KeybindConfigPayload(List<KeybindData> keys) implements CustomPayl
         return ID;
     }
 
-    public record KeybindData(String actionId, int defaultKey, String translationKey, java.util.Map<String, String> translations) {}
+    public record KeybindData(String actionId, int defaultKey, String translationKey, java.util.Map<String, String> translations, boolean hasShift, boolean hasCtrl, boolean hasAlt, boolean requiresDoubleTap, boolean trackHoldDuration, boolean isPartOfCombo) {}
 }
