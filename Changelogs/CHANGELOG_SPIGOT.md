@@ -1,5 +1,15 @@
 # Changelog - Spigot Plugin
 
+## [1.2.0] - bStats Metrics Update
+This update introduces comprehensive bStats integration to track API adoption and feature usage, helping to provide better insights into how InputEngine is used by servers.
+
+### ✨ Features
+* **bStats Integration**: Added bStats metrics to the plugin to track total usage across servers.
+* **Custom Charts**: Implemented custom charts to visualize Advanced Features Usage, Most Popular Default Keys, Registered Keybinds Volume, and Combo Manager Usage.
+
+### 🛠️ Developer Notes
+* Added `dev.darkblade.mod.input_engine.server.utils.KeyMapper` utility class to easily translate raw GLFW key codes into readable string names (e.g., `65` -> `A`, `340` -> `Left Shift`).
+
 ## [1.1.0] - Extended Input Update
 This major update introduces a complete visual overhaul for cooldowns, alongside powerful new input detection methods, combo support, and mouse interception.
 

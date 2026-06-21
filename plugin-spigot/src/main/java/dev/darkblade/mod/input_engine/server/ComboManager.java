@@ -22,6 +22,10 @@ public class ComboManager implements Listener {
         registeredCombos.put(comboId, actions);
     }
 
+    public boolean hasRegisteredCombos() {
+        return !registeredCombos.isEmpty();
+    }
+
     @EventHandler
     public void onKeyPress(PlayerKeyPressEvent event) {
         if (!event.isPressed())

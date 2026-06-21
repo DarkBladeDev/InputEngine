@@ -68,3 +68,7 @@ Check the `example-plugin` module for a complete, working example.
 ## License
 
 This project is available under the [MIT License](LICENSE).
+
+## Stats
+
+[![bStats](https://bstats.org/signatures/bukkit/InputEngine.svg)](https://bstats.org/plugin/bukkit/InputEngine/32141)
