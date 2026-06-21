@@ -1,5 +1,10 @@
 # Changelog - NeoForge Client
 
+## [1.1.1] - Polish Update
+
+### 🐛 Bug Fixes
+* **Keybind Conflicts**: The mod now silently ignores custom server keybinds if they physically collide with a mapped vanilla action, ensuring the player's primary gameplay is not interrupted.
+
 ## [1.1.0] - Extended Input Update
 This major update introduces a complete visual overhaul for cooldowns, alongside powerful new input detection methods and mouse interception.
 

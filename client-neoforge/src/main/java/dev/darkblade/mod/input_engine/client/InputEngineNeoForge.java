@@ -40,6 +40,17 @@ public class InputEngineNeoForge {
         NeoForge.EVENT_BUS.addListener(this::onRegisterClientCommands);
     }
 
+    private boolean isConflicting(Minecraft client, KeyMapping binding) {
+        for (KeyMapping other : client.options.keyMappings) {
+            if (other != binding && !dynamicKeyBindings.containsValue(other)) {
+                if (!other.isUnbound() && other.same(binding)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private void onClientSetup(final FMLClientSetupEvent event) {
         dev.darkblade.mod.input_engine.common.ClientConfig.load(net.neoforged.fml.loading.FMLPaths.CONFIGDIR.get().toFile());
         CategoryFixer.fix();
@@ -141,9 +152,13 @@ public class InputEngineNeoForge {
 
             // Modifiers check
             if (rawPressed) {
-                if (state.hasShift && !com.mojang.blaze3d.platform.InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT) && !com.mojang.blaze3d.platform.InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_SHIFT)) rawPressed = false;
-                if (state.hasCtrl && !com.mojang.blaze3d.platform.InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_CONTROL) && !com.mojang.blaze3d.platform.InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_CONTROL)) rawPressed = false;
-                if (state.hasAlt && !com.mojang.blaze3d.platform.InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_ALT) && !com.mojang.blaze3d.platform.InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_ALT)) rawPressed = false;
+                if (isConflicting(client, keyBinding)) {
+                    rawPressed = false;
+                } else {
+                    if (state.hasShift && !com.mojang.blaze3d.platform.InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT) && !com.mojang.blaze3d.platform.InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_SHIFT)) rawPressed = false;
+                    if (state.hasCtrl && !com.mojang.blaze3d.platform.InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_CONTROL) && !com.mojang.blaze3d.platform.InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_CONTROL)) rawPressed = false;
+                    if (state.hasAlt && !com.mojang.blaze3d.platform.InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_ALT) && !com.mojang.blaze3d.platform.InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_ALT)) rawPressed = false;
+                }
             }
 
             boolean isCurrentlyPressed = rawPressed;
