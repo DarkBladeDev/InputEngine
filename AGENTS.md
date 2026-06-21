@@ -1,13 +1,14 @@
----
-trigger: always_on
----
+# Input Engine Agent Guidelines
 
-## Memory
+> [!IMPORTANT]
+The InputEngine project consists of multiple modules targeting different Minecraft mod loaders:
+> - **client-fabric**: Fabric mod
+> - **client-neoforge**: NeoForge mod
+> - **plugin-spigot**: Spigot plugin
 
-You have access to Engram persistent memory via MCP tools (mem_save, mem_search, mem_session_summary, etc.).
+When making changes that affect all loaders, you MUST update ALL relevant modules. The project maintains functional parity between Fabric and NeoForge, with Spigot providing a separate server-side API.
 
-- Save proactively after significant work — don't wait to be asked.
-- After any compaction or context reset, call `mem_context` to recover session state before continuing.
+Always consult the [`multi-loader-sync`](.agent/skills/development/multi-loader-sync/SKILL.md) skill for specific API mapping information.
 
 ## Available Skills
 

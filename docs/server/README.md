@@ -10,4 +10,4 @@ The `plugin-spigot` module is built against the Spigot API.
 The server plugin listens for custom payload packets sent from the client mods (Fabric and NeoForge). Once an input is received, the server can process it or expose it to other server-side plugins via an API.
 
 ## API Usage
-If you are a developer looking to integrate InputEngine into your own plugins, please read the [Server API Documentation](api/README.md).
+If you are a developer looking to integrate InputEngine into your own plugins, please read the [API Documentation](api/README.md).
