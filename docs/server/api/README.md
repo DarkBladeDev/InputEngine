@@ -73,16 +73,18 @@ inputPlugin.registerExpectedKey("myplugin:jump", 32, "key.myplugin.jump");
 
 ### Registration with Translations
 
-You can provide a map of translations so the keybind appears correctly translated on the client side without needing a resource pack:
+### Advanced Registration
+
+You can specify additional behavior for a keybind, such as requiring modifier keys, double taps, or tracking how long it's held:
 
 ```java
-import java.util.Map;
-
-inputPlugin.registerExpectedKey("example:dash", 86, "key.example.dash", Map.of(
-    "en_us", "Dash",
-    "es_es", "Embestida",
-    "es_mx", "Embestida"
-)); // 86 is the GLFW key code for 'V'
+// Requires Double Tap, tracks hold duration, and does not require modifiers
+inputPlugin.registerExpectedKey(
+    "example:dash", 86, "key.example.dash", Map.of(
+        "en_us", "Dash",
+        "es_es", "Embestida"
+    ), false, false, false, true, true, true
+);
 ```
 
 **Parameters:**
@@ -90,6 +92,19 @@ inputPlugin.registerExpectedKey("example:dash", 86, "key.example.dash", Map.of(
 - `defaultKeyCode` (`int`): The default GLFW key code for the keybind (e.g., 86 for 'V'). (see [GLFW Keycodes documentation](https://www.glfw.org/docs/latest/group__keys.html))
 - `translationKey` (`String`): The translation key used in the client's language files or provided translations.
 - `translations` (`Map<String, String>`): (Optional) A map of locale codes (like `en_us`) to translated strings.
+- `hasShift`, `hasCtrl`, `hasAlt` (`boolean`): If `true`, the client will only send the packet if the modifier is held.
+- `requiresDoubleTap` (`boolean`): If `true`, requires pressing the key twice within 300ms to trigger.
+- `trackHoldDuration` (`boolean`): If `true`, the release event will include the duration (in ms) the key was held.
+- `isPartOfCombo` (`boolean`): Informative flag for the client, useful if the key is exclusively used for combos.
+
+## Combos
+
+You can define sequences of keys that trigger a specific `PlayerComboEvent`:
+
+```java
+// Register a combo where the player must press "example:attack" followed by "example:dash"
+inputPlugin.getComboManager().registerCombo("example:super_dash", java.util.List.of("example:attack", "example:dash"));
+```
 
 ## Listening to Key Events
 
@@ -109,14 +124,12 @@ public class KeyInputListener implements Listener {
     public void onPlayerKeyPress(PlayerKeyPressEvent event) {
         Player player = event.getPlayer();
         String actionId = event.getActionId();
-        boolean isPressed = event.isPressed();
 
         if (actionId.equals("example:dash")) {
-            if (isPressed) {
-                player.sendMessage("You pressed the dash key!");
-                // Execute dash logic here
-            } else {
-                player.sendMessage("You released the dash key!");
+            if (event.isDoubleTap()) {
+                player.sendMessage("You double-tapped the dash key!");
+            } else if (!event.isPressed() && event.getHoldDurationMs() > 0) {
+                player.sendMessage("You held the dash key for " + event.getHoldDurationMs() + "ms");
             }
         }
     }
@@ -127,3 +140,52 @@ public class KeyInputListener implements Listener {
 - `getPlayer()`: Returns the `Player` who pressed the key.
 - `getActionId()`: Returns the `String` ID of the action (matches what you registered).
 - `isPressed()`: Returns `true` if the key was just pressed, and `false` if it was released.
+- `isDoubleTap()`: Returns `true` if the action was a double-tap.
+- `getHoldDurationMs()`: Returns the time in milliseconds the key was held (requires `trackHoldDuration` to be true).
+
+## Listening to Combos
+
+If you registered a combo using the `ComboManager`, you can listen to `PlayerComboEvent`:
+
+```java
+import dev.darkblade.mod.input_engine.server.api.PlayerComboEvent;
+
+@EventHandler
+public void onPlayerCombo(PlayerComboEvent event) {
+    if (event.getComboId().equals("example:super_dash")) {
+        event.getPlayer().sendMessage("Combo Super Dash Triggered!");
+    }
+}
+```
+
+## Visual Cooldowns API
+
+You can instruct the client to show a visual cooldown progress bar for a specific action on their screen.
+
+```java
+import dev.darkblade.mod.input_engine.server.api.InputEngineAPI;
+
+// Send a 2-second cooldown to the player for the "example:dash" keybind
+InputEngineAPI.sendCooldown(player, "example:dash", 2000);
+```
+*Note: The client can move the cooldown HUD around their screen using the `/inputengine hud` command.*
+
+## Input Blocking API
+
+You can temporarily block or unblock the client from sending input for a specific action. This is useful for stun mechanics or cutscenes.
+
+```java
+import dev.darkblade.mod.input_engine.server.api.InputEngineAPI;
+
+// Block the dash key
+InputEngineAPI.blockInput(player, "example:dash", true);
+
+// Unblock it later
+InputEngineAPI.blockInput(player, "example:dash", false);
+```
+
+## Mouse Interception
+
+InputEngine natively intercepts the mouse scroll wheel and extra mouse buttons. You can listen to the following default action IDs without needing to register them explicitly:
+- `mouse.scroll.up`
+- `mouse.scroll.down`

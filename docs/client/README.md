@@ -17,5 +17,16 @@ Drop the appropriate `.jar` file for your loader (Fabric or NeoForge) into your 
 Both client mods are responsible for:
 1. **Receiving Keybind Configurations**: When a player joins a server running the InputEngine plugin, the client receives a list of expected keys to listen for.
 2. **Registering Keys**: The client automatically registers these keys into the game's options menu, allowing players to rebind them locally.
-3. **Sending Inputs**: Detecting player inputs (presses and releases) for the registered keys and sending them to the server via custom network payloads.
+3. **Advanced Inputs & Mouse Interception**: The client actively tracks modifiers, hold duration, double taps, and intercepts native mouse buttons/scrolling to send them directly to the server.
+4. **Sending Inputs**: Detecting player inputs (presses and releases) for the registered keys and sending them to the server via custom network payloads.
+5. **Cooldown HUD**: Displays dynamic progress bars for cooldowns triggered by the server.
+
+## Configuration & HUD
+
+The client maintains a local JSON configuration file (`config/inputengine-client.json`) to store visual preferences.
+
+Players can freely position their Cooldown HUD by running the following command in-game:
+`/inputengine hud`
+
+This opens an interactive screen where the HUD element can be dragged and placed anywhere on the screen without overlapping vanilla elements.
 

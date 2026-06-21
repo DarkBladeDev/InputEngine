@@ -5,8 +5,13 @@
 ## Features
 
 * **Client-Side Keybinding**: Registers custom keybinds on the client (e.g., Skill 1, Skill 2, Dodge). Supports both **Fabric** and **NeoForge**.
+* **Advanced Inputs**: Supports Double-Tap detection, Hold duration tracking, and Keyboard Modifiers (Shift/Ctrl/Alt).
+* **Mouse Interception**: Natively intercepts scroll wheel and extra mouse buttons for server-side processing.
+* **Combo System**: Define key combinations (e.g., `A` -> `Dash`) that trigger special events on the server.
+* **Visual Cooldowns & HUD**: Server can send visual cooldowns, which clients can freely position on their screen using `/inputengine hud`.
+* **Input Blocking API**: Server can temporarily disable specific keybinds for a player (useful for cutscenes or stuns).
 * **Network Bridge**: Sends efficient, lightweight payloads to the server whenever a bound key is pressed or released.
-* **Vanilla Server Compatible**: The networking channel is configured as optional on the client. You can safely keep the mod installed while joining vanilla servers without getting disconnected.
+* **Vanilla Server Compatible**: The networking channel is configured as optional on the client. You can safely keep the mod installed while joining vanilla servers.
 * **Server-Side API**: Exposes a custom Spigot Event (`PlayerKeyPressEvent`) so your server-side plugins can easily listen and react to player inputs.
 * **Modular Structure**: Clean separation between Client, Server, and Common code.
 
