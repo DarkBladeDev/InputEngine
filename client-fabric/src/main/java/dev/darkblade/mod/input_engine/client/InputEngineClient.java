@@ -21,6 +21,17 @@ public class InputEngineClient implements ClientModInitializer {
     public static final Map<String, KeyState> keyStates = new HashMap<>();
     public static final Map<String, Map<String, String>> DYNAMIC_TRANSLATIONS = new HashMap<>();
 
+    private boolean isConflicting(MinecraftClient client, KeyBinding binding) {
+        for (KeyBinding other : client.options.allKeys) {
+            if (other != binding && !dynamicKeyBindings.containsValue(other)) {
+                if (!other.isUnbound() && other.getBoundKeyTranslationKey().equals(binding.getBoundKeyTranslationKey())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @Override
     public void onInitializeClient() {
         dev.darkblade.mod.input_engine.common.ClientConfig.load(net.fabricmc.loader.api.FabricLoader.getInstance().getConfigDir().toFile());
@@ -115,9 +126,13 @@ public class InputEngineClient implements ClientModInitializer {
                 
                 // Modifiers check
                 if (rawPressed) {
-                    if (state.hasShift && !InputUtil.isKeyPressed(window, GLFW.GLFW_KEY_LEFT_SHIFT) && !InputUtil.isKeyPressed(window, GLFW.GLFW_KEY_RIGHT_SHIFT)) rawPressed = false;
-                    if (state.hasCtrl && !InputUtil.isKeyPressed(window, GLFW.GLFW_KEY_LEFT_CONTROL) && !InputUtil.isKeyPressed(window, GLFW.GLFW_KEY_RIGHT_CONTROL)) rawPressed = false;
-                    if (state.hasAlt && !InputUtil.isKeyPressed(window, GLFW.GLFW_KEY_LEFT_ALT) && !InputUtil.isKeyPressed(window, GLFW.GLFW_KEY_RIGHT_ALT)) rawPressed = false;
+                    if (isConflicting(client, keyBinding)) {
+                        rawPressed = false;
+                    } else {
+                        if (state.hasShift && !InputUtil.isKeyPressed(window, GLFW.GLFW_KEY_LEFT_SHIFT) && !InputUtil.isKeyPressed(window, GLFW.GLFW_KEY_RIGHT_SHIFT)) rawPressed = false;
+                        if (state.hasCtrl && !InputUtil.isKeyPressed(window, GLFW.GLFW_KEY_LEFT_CONTROL) && !InputUtil.isKeyPressed(window, GLFW.GLFW_KEY_RIGHT_CONTROL)) rawPressed = false;
+                        if (state.hasAlt && !InputUtil.isKeyPressed(window, GLFW.GLFW_KEY_LEFT_ALT) && !InputUtil.isKeyPressed(window, GLFW.GLFW_KEY_RIGHT_ALT)) rawPressed = false;
+                    }
                 }
 
                 boolean isCurrentlyPressed = rawPressed;
