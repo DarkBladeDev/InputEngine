@@ -8,6 +8,10 @@ import dev.darkblade.mod.input_engine.server.api.KeybindData;
 import dev.darkblade.mod.input_engine.server.api.PlayerKeyPressEvent;
 
 import dev.darkblade.mod.input_engine.server.utils.KeyMapper;
+import dev.darkblade.mod.input_engine.server.yaml.YamlKeyManager;
+import dev.darkblade.mod.input_engine.server.yaml.action.ActionRegistry;
+import dev.darkblade.mod.input_engine.server.yaml.condition.ConditionRegistry;
+import dev.darkblade.mod.input_engine.server.yaml.listener.YamlKeyExecutorListener;
 
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
@@ -31,6 +35,7 @@ public class InputEnginePlugin extends JavaPlugin implements PluginMessageListen
 
     private final List<KeybindData> registeredKeys = new ArrayList<>();
     private ComboManager comboManager;
+    private YamlKeyManager yamlKeyManager;
 
     @Override
     public void onEnable() {
@@ -54,6 +59,13 @@ public class InputEnginePlugin extends JavaPlugin implements PluginMessageListen
         comboManager = new ComboManager();
         getServer().getPluginManager().registerEvents(comboManager, this);
         getServer().getPluginManager().registerEvents(this, this);
+
+        // YAML Keybind System
+        ActionRegistry.registerDefaults();
+        ConditionRegistry.registerDefaults();
+        yamlKeyManager = new YamlKeyManager(this);
+        yamlKeyManager.loadKeys();
+        getServer().getPluginManager().registerEvents(new YamlKeyExecutorListener(yamlKeyManager), this);
 
         // bStats Metrics
         int pluginId = 32141;

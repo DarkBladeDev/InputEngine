@@ -1,5 +1,17 @@
 # Changelog - Spigot Plugin
 
+## [1.3.0] - YAML Configuration Update
+This update transforms InputEngine from a developer API into a standalone utility for server administrators, allowing custom keybinds to be created directly via YAML files.
+
+### ✨ Features
+* **YAML Keybinds**: Server admins can now create `.yml` files in the `plugins/InputEngine/keys/` directory to define custom keybinds.
+* **Universal Actions**: Configured keys can execute server commands (`console_command`), player commands (`player_command`), or send formatted messages (`message`).
+* **Conditional Logic**: Added a condition system (`permission`, `papi`) to restrict when keybinds can be executed.
+* **PlaceholderAPI Support**: Fully integrated with PlaceholderAPI to resolve variables like `%player_name%` and `%vault_eco_balance%` inside actions and conditions.
+
+### 🛠️ Developer Notes
+* Added the `ActionRegistry` and `ConditionRegistry` APIs. Third-party plugins can now register their own custom action and condition types for server admins to use in their YAML files.
+
 ## [1.2.0] - bStats Metrics Update
 This update introduces comprehensive bStats integration to track API adoption and feature usage, helping to provide better insights into how InputEngine is used by servers.
 
