@@ -12,6 +12,7 @@ import dev.darkblade.mod.input_engine.server.utils.KeyMapper;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.SimplePie;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -63,11 +64,16 @@ public class InputEnginePlugin extends JavaPlugin implements PluginMessageListen
         metrics.addCustomChart(new AdvancedPie("advanced_features_usage", () -> {
             Map<String, Integer> valueMap = new HashMap<>();
             for (KeybindData key : registeredKeys) {
-                if (key.hasShift()) valueMap.put("Shift Modifiers", valueMap.getOrDefault("Shift Modifiers", 0) + 1);
-                if (key.hasCtrl() || key.hasAlt()) valueMap.put("Ctrl/Alt Modifiers", valueMap.getOrDefault("Ctrl/Alt Modifiers", 0) + 1);
-                if (key.requiresDoubleTap()) valueMap.put("Double Tap", valueMap.getOrDefault("Double Tap", 0) + 1);
-                if (key.trackHoldDuration()) valueMap.put("Hold Duration", valueMap.getOrDefault("Hold Duration", 0) + 1);
-                if (key.isPartOfCombo()) valueMap.put("Combos", valueMap.getOrDefault("Combos", 0) + 1);
+                if (key.hasShift())
+                    valueMap.put("Shift Modifiers", valueMap.getOrDefault("Shift Modifiers", 0) + 1);
+                if (key.hasCtrl() || key.hasAlt())
+                    valueMap.put("Ctrl/Alt Modifiers", valueMap.getOrDefault("Ctrl/Alt Modifiers", 0) + 1);
+                if (key.requiresDoubleTap())
+                    valueMap.put("Double Tap", valueMap.getOrDefault("Double Tap", 0) + 1);
+                if (key.trackHoldDuration())
+                    valueMap.put("Hold Duration", valueMap.getOrDefault("Hold Duration", 0) + 1);
+                if (key.isPartOfCombo())
+                    valueMap.put("Combos", valueMap.getOrDefault("Combos", 0) + 1);
             }
             if (valueMap.isEmpty()) {
                 valueMap.put("None", 1);
@@ -91,9 +97,12 @@ public class InputEnginePlugin extends JavaPlugin implements PluginMessageListen
         // 3. Volumen de Keybinds Registradas (SimplePie)
         metrics.addCustomChart(new SimplePie("registered_keybinds_volume", () -> {
             int size = registeredKeys.size();
-            if (size == 0) return "0 keys";
-            if (size <= 3) return "1-3 keys";
-            if (size <= 10) return "4-10 keys";
+            if (size == 0)
+                return "0 keys";
+            if (size <= 3)
+                return "1-3 keys";
+            if (size <= 10)
+                return "4-10 keys";
             return "10+ keys";
         }));
 
@@ -115,6 +124,8 @@ public class InputEnginePlugin extends JavaPlugin implements PluginMessageListen
         getLogger().info("Registered config channel: " + NetworkConstants.FULL_CONFIG_CHANNEL);
         getLogger().info("Registered cooldown channel: " + NetworkConstants.FULL_COOLDOWN_CHANNEL);
         getLogger().info("Registered block input channel: " + NetworkConstants.FULL_BLOCK_INPUT_CHANNEL);
+        getLogger().info("Plugin linked to bStats");
+        getLogger().info("InputEngine plugin enabled successfully!");
     }
 
     public ComboManager getComboManager() {
