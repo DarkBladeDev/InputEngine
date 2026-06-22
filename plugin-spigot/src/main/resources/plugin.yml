@@ -5,3 +5,15 @@ api-version: "1.21"
 authors: [DarkBladeDev]
 description: Server-side handler for InputEngine custom payloads
 softdepend: [PlaceholderAPI]
+
+commands:
+    inputengine:
+        description: InputEngine commands
+        usage: "/inputengine <subcommand> [arguments]"
+        permission: inputengine.admin
+        permission-message: "You don't have permission to use this command."
+
+permissions:
+    inputengine.admin:
+        description: Grants access to all InputEngine commands
+        default: op

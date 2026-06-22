@@ -1,0 +1,11 @@
+# =============================================================
+# InputEngine - Server Configuration
+# =============================================================
+
+# When you reload the plugin using /inputengine reload, should
+# the server automatically send the updated keybinds to all
+# currently online players?
+#
+# If set to true, players don't need to reconnect to receive
+# the updated keys.
+auto-sync-on-reload: true

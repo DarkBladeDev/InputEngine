@@ -1,8 +1,12 @@
 package dev.darkblade.mod.input_engine.server.yaml.action;
 
+import dev.darkblade.mod.input_engine.server.yaml.action.impl.ActionbarAction;
 import dev.darkblade.mod.input_engine.server.yaml.action.impl.ConsoleCommandAction;
 import dev.darkblade.mod.input_engine.server.yaml.action.impl.MessageAction;
 import dev.darkblade.mod.input_engine.server.yaml.action.impl.PlayerCommandAction;
+import dev.darkblade.mod.input_engine.server.yaml.action.impl.SoundAction;
+import dev.darkblade.mod.input_engine.server.yaml.action.impl.TeleportAction;
+import dev.darkblade.mod.input_engine.server.yaml.action.impl.TitleAction;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -71,12 +75,20 @@ public final class ActionRegistry {
      *   <li>{@code console_command} — {@link ConsoleCommandAction}</li>
      *   <li>{@code player_command} — {@link PlayerCommandAction}</li>
      *   <li>{@code message} — {@link MessageAction}</li>
+     *   <li>{@code sound} — {@link SoundAction}</li>
+     *   <li>{@code actionbar} — {@link ActionbarAction}</li>
+     *   <li>{@code title} — {@link TitleAction}</li>
+     *   <li>{@code teleport} — {@link TeleportAction}</li>
      * </ul>
      */
     public static void registerDefaults() {
         register("console_command", new ConsoleCommandAction());
         register("player_command", new PlayerCommandAction());
         register("message", new MessageAction());
+        register("sound", new SoundAction());
+        register("actionbar", new ActionbarAction());
+        register("title", new TitleAction());
+        register("teleport", new TeleportAction());
     }
 
     /**

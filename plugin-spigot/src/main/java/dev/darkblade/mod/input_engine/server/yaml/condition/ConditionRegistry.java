@@ -1,7 +1,10 @@
 package dev.darkblade.mod.input_engine.server.yaml.condition;
 
+import dev.darkblade.mod.input_engine.server.yaml.condition.impl.CooldownCondition;
+import dev.darkblade.mod.input_engine.server.yaml.condition.impl.GamemodeCondition;
 import dev.darkblade.mod.input_engine.server.yaml.condition.impl.PermissionCondition;
 import dev.darkblade.mod.input_engine.server.yaml.condition.impl.PlaceholderCondition;
+import dev.darkblade.mod.input_engine.server.yaml.condition.impl.WorldCondition;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -71,6 +74,9 @@ public final class ConditionRegistry {
     public static void registerDefaults() {
         register("permission", new PermissionCondition());
         register("papi", new PlaceholderCondition());
+        register("world", new WorldCondition());
+        register("gamemode", new GamemodeCondition());
+        register("cooldown", new CooldownCondition());
     }
 
     /**

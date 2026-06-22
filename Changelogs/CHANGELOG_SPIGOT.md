@@ -5,12 +5,15 @@ This update transforms InputEngine from a developer API into a standalone utilit
 
 ### ✨ Features
 * **YAML Keybinds**: Server admins can now create `.yml` files in the `plugins/InputEngine/keys/` directory to define custom keybinds.
-* **Universal Actions**: Configured keys can execute server commands (`console_command`), player commands (`player_command`), or send formatted messages (`message`).
-* **Conditional Logic**: Added a condition system (`permission`, `papi`) to restrict when keybinds can be executed.
+* **Universal Actions**: Configured keys can execute server commands (`console_command`), player commands (`player_command`), send formatted messages (`message`), play sounds (`sound`), display action bars (`actionbar`), show titles (`title`), and teleport players (`teleport`).
+* **Conditional Logic**: Added a condition system to restrict when keybinds can be executed. Supported conditions: `permission`, `papi`, `world`, `gamemode`, and `cooldown`.
+* **Advanced Cooldowns**: Cooldowns (`cooldown`) can now share IDs across multiple keys and automatically sync their remaining duration to the client's visual HUD.
+* **Real-time Reloads**: Added the `/inputengine reload` command. Server administrators can now hot-reload their YAML configurations, and optionally sync them immediately to all online players without requiring a server restart or player reconnection.
 * **PlaceholderAPI Support**: Fully integrated with PlaceholderAPI to resolve variables like `%player_name%` and `%vault_eco_balance%` inside actions and conditions.
 
 ### 🛠️ Developer Notes
 * Added the `ActionRegistry` and `ConditionRegistry` APIs. Third-party plugins can now register their own custom action and condition types for server admins to use in their YAML files.
+
 
 ## [1.2.0] - bStats Metrics Update
 This update introduces comprehensive bStats integration to track API adoption and feature usage, helping to provide better insights into how InputEngine is used by servers.

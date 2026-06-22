@@ -71,6 +71,14 @@ public class YamlKeyManager {
     }
 
     /**
+     * Clears all currently loaded keybinds and reloads them from the keys directory.
+     */
+    public void reloadKeys() {
+        keybinds.clear();
+        loadKeys();
+    }
+
+    /**
      * Returns the {@link YamlKeybind} with the given ID, or {@code null} if not found.
      *
      * @param id the keybind identifier
@@ -205,22 +213,42 @@ public class YamlKeyManager {
                       hold_duration: false
                     
                     # Conditions that must ALL be met before actions execute (optional)
-                    # Supported types: 'permission', 'papi'
+                    # Supported types: 'permission', 'papi', 'world', 'gamemode', 'cooldown'
                     conditions:
                       - type: 'permission'
                         permission: 'inputengine.example'
+                    #  - type: 'world'
+                    #    worlds: ['world', 'world_nether']
+                    #  - type: 'gamemode'
+                    #    gamemodes: ['SURVIVAL']
+                    #  - type: 'cooldown'
+                    #    id: 'example_ability'
+                    #    duration: 5000
+                    #    message: '&cPlease wait %time%s before using this again.'
                     #  - type: 'papi'
                     #    placeholder: '%player_health%'
                     #    operator: '>='
                     #    value: '10.0'
                     
                     # Actions to execute when the key is pressed (in order)
-                    # Supported types: 'console_command', 'player_command', 'message'
+                    # Supported types: 'console_command', 'player_command', 'message', 'sound', 'actionbar', 'title', 'teleport'
                     actions:
                       - type: 'message'
                         text: '&aYou pressed the example key!'
                       - type: 'player_command'
                         command: 'help'
+                    #  - type: 'sound'
+                    #    sound: 'ENTITY_PLAYER_LEVELUP'
+                    #  - type: 'actionbar'
+                    #    text: '&eKey pressed!'
+                    #  - type: 'title'
+                    #    title: '&6Warning'
+                    #    subtitle: '&7You pressed the key.'
+                    #  - type: 'teleport'
+                    #    world: 'world'
+                    #    x: 0.0
+                    #    y: 64.0
+                    #    z: 0.0
                     #  - type: 'console_command'
                     #    command: 'say %player_name% used InputEngine!'
                     """);

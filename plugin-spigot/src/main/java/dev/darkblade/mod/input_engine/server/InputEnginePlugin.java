@@ -12,6 +12,7 @@ import dev.darkblade.mod.input_engine.server.yaml.YamlKeyManager;
 import dev.darkblade.mod.input_engine.server.yaml.action.ActionRegistry;
 import dev.darkblade.mod.input_engine.server.yaml.condition.ConditionRegistry;
 import dev.darkblade.mod.input_engine.server.yaml.listener.YamlKeyExecutorListener;
+import dev.darkblade.mod.input_engine.server.command.InputEngineCommand;
 
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
@@ -41,6 +42,8 @@ public class InputEnginePlugin extends JavaPlugin implements PluginMessageListen
     public void onEnable() {
         getLogger().info("InputEngine Server Plugin is enabling...");
 
+        saveDefaultConfig();
+
         getServer().getMessenger().registerIncomingPluginChannel(
                 this,
                 NetworkConstants.FULL_CHANNEL,
@@ -66,6 +69,9 @@ public class InputEnginePlugin extends JavaPlugin implements PluginMessageListen
         yamlKeyManager = new YamlKeyManager(this);
         yamlKeyManager.loadKeys();
         getServer().getPluginManager().registerEvents(new YamlKeyExecutorListener(yamlKeyManager), this);
+
+        // Command Registration
+        getCommand("inputengine").setExecutor(new InputEngineCommand(this, yamlKeyManager));
 
         // bStats Metrics
         int pluginId = 32141;
@@ -168,47 +174,63 @@ public class InputEnginePlugin extends JavaPlugin implements PluginMessageListen
                 hasAlt, requiresDoubleTap, trackHoldDuration, isPartOfCombo));
     }
 
+    public void clearRegisteredKeys() {
+        registeredKeys.clear();
+    }
+
+    public void syncToOnlinePlayers() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            sendConfigPayload(player);
+        }
+    }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (registeredKeys.isEmpty())
             return;
 
         Bukkit.getScheduler().runTaskLater(this, () -> {
-            ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            out.writeInt(registeredKeys.size());
+            sendConfigPayload(event.getPlayer());
+        }, 20L); // Delay to ensure client is ready
+    }
 
-            for (KeybindData data : registeredKeys) {
-                byte[] idBytes = data.actionId().getBytes(StandardCharsets.UTF_8);
-                out.writeInt(idBytes.length);
-                out.write(idBytes);
+    private void sendConfigPayload(Player player) {
+        if (registeredKeys.isEmpty()) return;
 
-                out.writeInt(data.defaultKey());
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeInt(registeredKeys.size());
 
-                byte[] transBytes = data.translationKey().getBytes(StandardCharsets.UTF_8);
-                out.writeInt(transBytes.length);
-                out.write(transBytes);
+        for (KeybindData data : registeredKeys) {
+            byte[] idBytes = data.actionId().getBytes(StandardCharsets.UTF_8);
+            out.writeInt(idBytes.length);
+            out.write(idBytes);
 
-                out.writeInt(data.translations().size());
-                for (java.util.Map.Entry<String, String> entry : data.translations().entrySet()) {
-                    byte[] kBytes = entry.getKey().getBytes(StandardCharsets.UTF_8);
-                    out.writeInt(kBytes.length);
-                    out.write(kBytes);
+            out.writeInt(data.defaultKey());
 
-                    byte[] vBytes = entry.getValue().getBytes(StandardCharsets.UTF_8);
-                    out.writeInt(vBytes.length);
-                    out.write(vBytes);
-                }
+            byte[] transBytes = data.translationKey().getBytes(StandardCharsets.UTF_8);
+            out.writeInt(transBytes.length);
+            out.write(transBytes);
 
-                out.writeBoolean(data.hasShift());
-                out.writeBoolean(data.hasCtrl());
-                out.writeBoolean(data.hasAlt());
-                out.writeBoolean(data.requiresDoubleTap());
-                out.writeBoolean(data.trackHoldDuration());
-                out.writeBoolean(data.isPartOfCombo());
+            out.writeInt(data.translations().size());
+            for (java.util.Map.Entry<String, String> entry : data.translations().entrySet()) {
+                byte[] kBytes = entry.getKey().getBytes(StandardCharsets.UTF_8);
+                out.writeInt(kBytes.length);
+                out.write(kBytes);
+
+                byte[] vBytes = entry.getValue().getBytes(StandardCharsets.UTF_8);
+                out.writeInt(vBytes.length);
+                out.write(vBytes);
             }
 
-            event.getPlayer().sendPluginMessage(this, NetworkConstants.FULL_CONFIG_CHANNEL, out.toByteArray());
-        }, 20L); // Delay to ensure client is ready
+            out.writeBoolean(data.hasShift());
+            out.writeBoolean(data.hasCtrl());
+            out.writeBoolean(data.hasAlt());
+            out.writeBoolean(data.requiresDoubleTap());
+            out.writeBoolean(data.trackHoldDuration());
+            out.writeBoolean(data.isPartOfCombo());
+        }
+
+        player.sendPluginMessage(this, NetworkConstants.FULL_CONFIG_CHANNEL, out.toByteArray());
     }
 
     @Override
