@@ -25,8 +25,8 @@ public class MouseHandlerMixin {
             String scrollAction = yOffset > 0 ? "mouse.scroll.up" : "mouse.scroll.down";
             var conn = net.minecraft.client.Minecraft.getInstance().getConnection();
             if (conn != null) {
-                conn.send(new KeystrokePayload(scrollAction, true, 0, false));
-                conn.send(new KeystrokePayload(scrollAction, false, 0, false));
+                conn.send(new net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket(new KeystrokePayload(scrollAction, true, 0, false)));
+                conn.send(new net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket(new KeystrokePayload(scrollAction, false, 0, false)));
             }
         }
     }

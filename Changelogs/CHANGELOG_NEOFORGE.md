@@ -1,5 +1,11 @@
 # Changelog - NeoForge Client
 
+## [1.1.2] - Network Protocol Fix
+A critical hotfix for connection stability with non-Forge servers.
+
+### 🐛 Bug Fixes
+* **Server Communication Crash**: Fixed an `UnsupportedOperationException` crash when sending keystrokes to Spigot servers. The mod now properly bypasses NeoForge's strict network registry checks by wrapping the payload in a vanilla packet.
+
 ## [1.1.1] - Polish Update
 
 ### 🐛 Bug Fixes

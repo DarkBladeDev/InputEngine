@@ -171,12 +171,12 @@ public class InputEngineNeoForge {
                 if (state.requiresDoubleTap) {
                     if (currentTime - state.lastReleaseTime <= 300) {
                         var conn = net.minecraft.client.Minecraft.getInstance().getConnection();
-                        if (conn != null) conn.send(new KeystrokePayload(actionId, true, 0, true));
+                        if (conn != null) conn.send(new net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket(new KeystrokePayload(actionId, true, 0, true)));
                         state.lastReleaseTime = 0;
                     }
                 } else {
                     var conn = net.minecraft.client.Minecraft.getInstance().getConnection();
-                    if (conn != null) conn.send(new KeystrokePayload(actionId, true, 0, false));
+                    if (conn != null) conn.send(new net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket(new KeystrokePayload(actionId, true, 0, false)));
                 }
             } else if (!isCurrentlyPressed && wasPressed) {
                 state.isPressed = false;
@@ -185,10 +185,10 @@ public class InputEngineNeoForge {
                 
                 if (state.trackHoldDuration && holdDuration > 0) {
                     var conn = net.minecraft.client.Minecraft.getInstance().getConnection();
-                    if (conn != null) conn.send(new KeystrokePayload(actionId, false, holdDuration, false));
+                    if (conn != null) conn.send(new net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket(new KeystrokePayload(actionId, false, holdDuration, false)));
                 } else if (!state.requiresDoubleTap) {
                     var conn = net.minecraft.client.Minecraft.getInstance().getConnection();
-                    if (conn != null) conn.send(new KeystrokePayload(actionId, false, 0, false));
+                    if (conn != null) conn.send(new net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket(new KeystrokePayload(actionId, false, 0, false)));
                 }
             }
         }
