@@ -1,5 +1,11 @@
 # Changelog - NeoForge Client
 
+## [1.1.3] - Network Protocol Fix
+Another critical hotfix for connection stability with servers without the InputEngine plugin installed.
+
+### 🐛 Bug Fixes
+* **Server Communication Crash**: Fixed an `UnsupportedOperationException` crash when sending keystrokes to Spigot servers without the InputEngine plugin. The mod now verifies if the server supports the custom payload channel before dispatching it.
+
 ## [1.1.2] - Network Protocol Fix
 A critical hotfix for connection stability with non-Forge servers.
 

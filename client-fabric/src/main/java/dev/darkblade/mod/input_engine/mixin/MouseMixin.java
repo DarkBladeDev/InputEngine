@@ -28,10 +28,12 @@ public class MouseMixin {
     private void onMouseScroll(long window, double horizontal, double vertical, CallbackInfo ci) {
         if (vertical != 0 && net.minecraft.client.MinecraftClient.getInstance().player != null) {
             String scrollAction = vertical > 0 ? "mouse.scroll.up" : "mouse.scroll.down";
-            // We could send a KeystrokePayload for the scroll
-            ClientPlayNetworking.send(new KeystrokePayload(scrollAction, true, 0, false));
-            // Send immediate release for scroll
-            ClientPlayNetworking.send(new KeystrokePayload(scrollAction, false, 0, false));
+            if (ClientPlayNetworking.canSend(KeystrokePayload.ID)) {
+                // We could send a KeystrokePayload for the scroll
+                ClientPlayNetworking.send(new KeystrokePayload(scrollAction, true, 0, false));
+                // Send immediate release for scroll
+                ClientPlayNetworking.send(new KeystrokePayload(scrollAction, false, 0, false));
+            }
         }
     }
 }

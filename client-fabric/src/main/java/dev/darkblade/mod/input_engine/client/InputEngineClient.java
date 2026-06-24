@@ -146,12 +146,12 @@ public class InputEngineClient implements ClientModInitializer {
                     if (state.requiresDoubleTap) {
                         if (currentTime - state.lastReleaseTime <= 300) {
                             // Valid double tap
-                            ClientPlayNetworking.send(new KeystrokePayload(actionId, true, 0, true));
+                            if (ClientPlayNetworking.canSend(KeystrokePayload.ID)) ClientPlayNetworking.send(new KeystrokePayload(actionId, true, 0, true));
                             state.lastReleaseTime = 0; // consume double tap
                         }
                     } else {
                         // Normal press
-                        ClientPlayNetworking.send(new KeystrokePayload(actionId, true, 0, false));
+                        if (ClientPlayNetworking.canSend(KeystrokePayload.ID)) ClientPlayNetworking.send(new KeystrokePayload(actionId, true, 0, false));
                     }
                 } else if (!isCurrentlyPressed && wasPressed) {
                     // Just released
@@ -160,10 +160,10 @@ public class InputEngineClient implements ClientModInitializer {
                     state.lastReleaseTime = currentTime;
                     
                     if (state.trackHoldDuration && holdDuration > 0) {
-                        ClientPlayNetworking.send(new KeystrokePayload(actionId, false, holdDuration, false));
+                        if (ClientPlayNetworking.canSend(KeystrokePayload.ID)) ClientPlayNetworking.send(new KeystrokePayload(actionId, false, holdDuration, false));
                     } else if (!state.requiresDoubleTap) {
                         // Normal release
-                        ClientPlayNetworking.send(new KeystrokePayload(actionId, false, 0, false));
+                        if (ClientPlayNetworking.canSend(KeystrokePayload.ID)) ClientPlayNetworking.send(new KeystrokePayload(actionId, false, 0, false));
                     }
                 }
             }

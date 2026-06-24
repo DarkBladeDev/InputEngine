@@ -1,5 +1,11 @@
 # Changelog - Fabric Client
 
+## [1.1.2] - Network Protocol Fix
+A critical hotfix for connection stability with vanilla servers.
+
+### 🐛 Bug Fixes
+* **Server Communication Crash**: Fixed a crash when sending keystrokes to servers without the InputEngine plugin. The mod now verifies if the server supports the custom payload channel before dispatching it.
+
 ## [1.1.1] - Polish Update
 
 ### 🐛 Bug Fixes
