@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[3,)"
+loaderVersion="*"
 license="MIT"
 
 [[mods]]
@@ -7,6 +7,8 @@ modId="input_engine"
 version="${version}"
 displayName="Input Engine"
 description="Input Engine mod for NeoForge"
+logoFile="assets/input-engine/icon.png"
+authors="DarkBladeDev"
 
 [[mixins]]
 config="input-engine.mixins.json"
