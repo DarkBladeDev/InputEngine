@@ -1,5 +1,15 @@
 # Changelog - NeoForge Client
 
+## [1.2.0] - Dynamic Language Translations
+This update brings fully integrated server-side translations, dynamically injected into the client language system without requiring local resource packs.
+
+### ✨ Features
+* **Dynamic Translations**: Key names and category titles defined in the server's YAML are now dynamically injected into the client's current language map.
+
+### 🐛 Bug Fixes
+* **Language System Stability**: Ensured backward compatibility with servers passing missing translation properties.
+
+
 ## [1.1.3] - Network Protocol Fix
 Another critical hotfix for connection stability with servers without the InputEngine plugin installed.
 

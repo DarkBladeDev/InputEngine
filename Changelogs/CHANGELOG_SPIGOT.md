@@ -1,5 +1,15 @@
 # Changelog - Spigot Plugin
 
+## [1.4.0] - Translation Engine
+
+### ✨ Features
+* **YAML Native Translations**: You can now define translations for multiple languages natively within the `.yml` configurations. You can now define keys like `en_us: "Dash"` nested under a specific `translation_key` or `category` allowing the clients to natively read the translation depending on their current language.
+
+### 🐛 Bug Fixes
+* **YAML Path Resolution**: Fixed a major bug where Bukkit's path separation using `.` corrupted translation keys (such as `key.inputengine.test`).
+* **API Backward Compatibility**: The plugin API now automatically detects and casts legacy `Map<String, String>` usages from previous versions to safely map them without breaking.
+
+
 ## [1.3.1] - YAML Expansion & Hot-Reloads
 This update expands the YAML configuration system with new visual actions, advanced conditions, and real-time reloading capabilities.
 
