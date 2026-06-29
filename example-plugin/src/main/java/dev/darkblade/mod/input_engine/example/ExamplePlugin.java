@@ -22,16 +22,20 @@ public class ExamplePlugin extends JavaPlugin implements Listener {
             // Dash key (V) - Tracks hold duration and double tap, no modifiers required
             inputPlugin.registerExpectedKey(
                 "example:dash", 86, "key.example.dash", java.util.Map.of(
-                    "en_us", "Dash",
-                    "es_es", "Embestida"
+                    "key.example.dash", java.util.Map.of(
+                        "en_us", "Dash",
+                        "es_es", "Embestida"
+                    )
                 ), false, false, false, true, true, true
             );
 
             // Another key (A) to trigger the combo
             inputPlugin.registerExpectedKey(
                 "example:attack", 65, "key.example.attack", java.util.Map.of(
-                    "en_us", "Special Attack",
-                    "es_es", "Ataque Especial"
+                    "key.example.attack", java.util.Map.of(
+                        "en_us", "Special Attack",
+                        "es_es", "Ataque Especial"
+                    )
                 ), false, false, false, false, false, true
             );
             

@@ -29,7 +29,7 @@ public class InputEngineNeoForge {
     public static final String MOD_ID = "input_engine";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    private final Map<String, KeyMapping> dynamicKeyBindings = new HashMap<>();
+    public static final Map<String, KeyMapping> dynamicKeyBindings = new HashMap<>();
     public static final Map<String, KeyState> keyStates = new HashMap<>();
     public static final Map<String, Map<String, String>> DYNAMIC_TRANSLATIONS = new HashMap<>();
 
@@ -53,6 +53,7 @@ public class InputEngineNeoForge {
 
     private void onClientSetup(final FMLClientSetupEvent event) {
         dev.darkblade.mod.input_engine.common.ClientConfig.load(net.neoforged.fml.loading.FMLPaths.CONFIGDIR.get().toFile());
+        dev.darkblade.mod.input_engine.common.ServerKeybindStore.load(net.neoforged.fml.loading.FMLPaths.CONFIGDIR.get().toFile());
         CategoryFixer.fix();
     }
 
@@ -84,6 +85,23 @@ public class InputEngineNeoForge {
                                 data.defaultKey(),
                                 "category.inputengine.keys"
                         );
+                        
+                        String serverIp = "singleplayer";
+                        if (Minecraft.getInstance().getCurrentServer() != null) {
+                            serverIp = Minecraft.getInstance().getCurrentServer().ip;
+                        }
+                        String savedKey = dev.darkblade.mod.input_engine.common.ServerKeybindStore.getSavedKey(serverIp, data.actionId());
+                        if (savedKey != null) {
+                            try {
+                                keyBinding.setKeyModifierAndCode(
+                                    net.neoforged.neoforge.client.settings.KeyModifier.NONE, 
+                                    InputConstants.getKey(savedKey)
+                                );
+                            } catch (Exception e) {
+                                // ignore
+                            }
+                        }
+
                         dynamicKeyBindings.put(data.actionId(), keyBinding);
                         
                         KeyState state = new KeyState();
@@ -91,7 +109,7 @@ public class InputEngineNeoForge {
                         keyStates.put(data.actionId(), state);
 
                         if (data.translations() != null && !data.translations().isEmpty()) {
-                            DYNAMIC_TRANSLATIONS.put(data.translationKey(), data.translations());
+                            DYNAMIC_TRANSLATIONS.putAll(data.translations());
                         }
 
                         Minecraft client = Minecraft.getInstance();

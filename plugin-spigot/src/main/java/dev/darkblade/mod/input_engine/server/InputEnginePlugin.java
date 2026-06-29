@@ -162,16 +162,37 @@ public class InputEnginePlugin extends JavaPlugin implements PluginMessageListen
     }
 
     public void registerExpectedKey(String actionId, int defaultKeyCode, String translationKey,
-            java.util.Map<String, String> translations) {
+            java.util.Map<String, java.util.Map<String, String>> translations) {
         registerExpectedKey(actionId, defaultKeyCode, translationKey, translations, false, false, false, false, false,
                 false);
     }
 
     public void registerExpectedKey(String actionId, int defaultKeyCode, String translationKey,
-            java.util.Map<String, String> translations, boolean hasShift, boolean hasCtrl, boolean hasAlt,
+            java.util.Map<String, java.util.Map<String, String>> translations, boolean hasShift, boolean hasCtrl,
+            boolean hasAlt,
             boolean requiresDoubleTap, boolean trackHoldDuration, boolean isPartOfCombo) {
-        registeredKeys.add(new KeybindData(actionId, defaultKeyCode, translationKey, translations, hasShift, hasCtrl,
-                hasAlt, requiresDoubleTap, trackHoldDuration, isPartOfCombo));
+
+        java.util.Map<String, java.util.Map<String, String>> safeTranslations = new java.util.LinkedHashMap<>();
+        if (translations != null && !translations.isEmpty()) {
+            for (java.util.Map.Entry<?, ?> entry : ((java.util.Map<?, ?>) translations).entrySet()) {
+                String key = String.valueOf(entry.getKey());
+                Object valObj = entry.getValue();
+                if (valObj instanceof java.util.Map<?, ?> mapVal) {
+                    java.util.Map<String, String> langMap = new java.util.LinkedHashMap<>();
+                    for (java.util.Map.Entry<?, ?> langEntry : mapVal.entrySet()) {
+                        langMap.put(String.valueOf(langEntry.getKey()), String.valueOf(langEntry.getValue()));
+                    }
+                    safeTranslations.put(key, langMap);
+                } else if (valObj instanceof String strVal) {
+                    safeTranslations.computeIfAbsent(translationKey, k -> new java.util.LinkedHashMap<>()).put(key,
+                            strVal);
+                }
+            }
+        }
+
+        registeredKeys
+                .add(new KeybindData(actionId, defaultKeyCode, translationKey, safeTranslations, hasShift, hasCtrl,
+                        hasAlt, requiresDoubleTap, trackHoldDuration, isPartOfCombo));
     }
 
     public void clearRegisteredKeys() {
@@ -195,7 +216,8 @@ public class InputEnginePlugin extends JavaPlugin implements PluginMessageListen
     }
 
     private void sendConfigPayload(Player player) {
-        if (registeredKeys.isEmpty()) return;
+        if (registeredKeys.isEmpty())
+            return;
 
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeInt(registeredKeys.size());
@@ -212,14 +234,22 @@ public class InputEnginePlugin extends JavaPlugin implements PluginMessageListen
             out.write(transBytes);
 
             out.writeInt(data.translations().size());
-            for (java.util.Map.Entry<String, String> entry : data.translations().entrySet()) {
+            for (java.util.Map.Entry<String, java.util.Map<String, String>> entry : data.translations().entrySet()) {
                 byte[] kBytes = entry.getKey().getBytes(StandardCharsets.UTF_8);
                 out.writeInt(kBytes.length);
                 out.write(kBytes);
 
-                byte[] vBytes = entry.getValue().getBytes(StandardCharsets.UTF_8);
-                out.writeInt(vBytes.length);
-                out.write(vBytes);
+                java.util.Map<String, String> langMap = entry.getValue();
+                out.writeInt(langMap.size());
+                for (java.util.Map.Entry<String, String> langEntry : langMap.entrySet()) {
+                    byte[] lBytes = langEntry.getKey().getBytes(StandardCharsets.UTF_8);
+                    out.writeInt(lBytes.length);
+                    out.write(lBytes);
+
+                    byte[] tBytes = langEntry.getValue().getBytes(StandardCharsets.UTF_8);
+                    out.writeInt(tBytes.length);
+                    out.write(tBytes);
+                }
             }
 
             out.writeBoolean(data.hasShift());

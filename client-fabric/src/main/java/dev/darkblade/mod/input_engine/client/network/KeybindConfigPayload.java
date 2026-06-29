@@ -26,13 +26,21 @@ public record KeybindConfigPayload(List<KeybindData> keys) implements CustomPayl
                 String transKey = buf.readCharSequence(transLen, StandardCharsets.UTF_8).toString();
                 
                 int mapSize = buf.readInt();
-                java.util.Map<String, String> map = new java.util.HashMap<>();
+                java.util.Map<String, java.util.Map<String, String>> map = new java.util.HashMap<>();
                 for (int j = 0; j < mapSize; j++) {
                     int kLen = buf.readInt();
                     String k = buf.readCharSequence(kLen, StandardCharsets.UTF_8).toString();
-                    int vLen = buf.readInt();
-                    String v = buf.readCharSequence(vLen, StandardCharsets.UTF_8).toString();
-                    map.put(k, v);
+                    
+                    int langSize = buf.readInt();
+                    java.util.Map<String, String> langMap = new java.util.HashMap<>();
+                    for (int l = 0; l < langSize; l++) {
+                        int lLen = buf.readInt();
+                        String lang = buf.readCharSequence(lLen, StandardCharsets.UTF_8).toString();
+                        int tLen = buf.readInt();
+                        String text = buf.readCharSequence(tLen, StandardCharsets.UTF_8).toString();
+                        langMap.put(lang, text);
+                    }
+                    map.put(k, langMap);
                 }
                 
                 boolean hasShift = buf.readBoolean();
@@ -62,14 +70,22 @@ public record KeybindConfigPayload(List<KeybindData> keys) implements CustomPayl
                 buf.writeBytes(transBytes);
                 
                 buf.writeInt(key.translations().size());
-                for (java.util.Map.Entry<String, String> entry : key.translations().entrySet()) {
+                for (java.util.Map.Entry<String, java.util.Map<String, String>> entry : key.translations().entrySet()) {
                     byte[] kBytes = entry.getKey().getBytes(StandardCharsets.UTF_8);
                     buf.writeInt(kBytes.length);
                     buf.writeBytes(kBytes);
                     
-                    byte[] vBytes = entry.getValue().getBytes(StandardCharsets.UTF_8);
-                    buf.writeInt(vBytes.length);
-                    buf.writeBytes(vBytes);
+                    java.util.Map<String, String> langMap = entry.getValue();
+                    buf.writeInt(langMap.size());
+                    for (java.util.Map.Entry<String, String> langEntry : langMap.entrySet()) {
+                        byte[] lBytes = langEntry.getKey().getBytes(StandardCharsets.UTF_8);
+                        buf.writeInt(lBytes.length);
+                        buf.writeBytes(lBytes);
+                        
+                        byte[] tBytes = langEntry.getValue().getBytes(StandardCharsets.UTF_8);
+                        buf.writeInt(tBytes.length);
+                        buf.writeBytes(tBytes);
+                    }
                 }
                 
                 buf.writeBoolean(key.hasShift());
@@ -87,5 +103,5 @@ public record KeybindConfigPayload(List<KeybindData> keys) implements CustomPayl
         return ID;
     }
 
-    public record KeybindData(String actionId, int defaultKey, String translationKey, java.util.Map<String, String> translations, boolean hasShift, boolean hasCtrl, boolean hasAlt, boolean requiresDoubleTap, boolean trackHoldDuration, boolean isPartOfCombo) {}
+    public record KeybindData(String actionId, int defaultKey, String translationKey, java.util.Map<String, java.util.Map<String, String>> translations, boolean hasShift, boolean hasCtrl, boolean hasAlt, boolean requiresDoubleTap, boolean trackHoldDuration, boolean isPartOfCombo) {}
 }

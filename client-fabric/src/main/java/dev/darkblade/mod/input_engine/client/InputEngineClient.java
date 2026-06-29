@@ -17,7 +17,7 @@ import dev.darkblade.mod.input_engine.common.KeyState;
 
 public class InputEngineClient implements ClientModInitializer {
 
-    private final Map<String, KeyBinding> dynamicKeyBindings = new HashMap<>();
+    public static final Map<String, KeyBinding> dynamicKeyBindings = new HashMap<>();
     public static final Map<String, KeyState> keyStates = new HashMap<>();
     public static final Map<String, Map<String, String>> DYNAMIC_TRANSLATIONS = new HashMap<>();
 
@@ -35,6 +35,7 @@ public class InputEngineClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         dev.darkblade.mod.input_engine.common.ClientConfig.load(net.fabricmc.loader.api.FabricLoader.getInstance().getConfigDir().toFile());
+        dev.darkblade.mod.input_engine.common.ServerKeybindStore.load(net.fabricmc.loader.api.FabricLoader.getInstance().getConfigDir().toFile());
         net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback.EVENT.register(new dev.darkblade.mod.input_engine.client.hud.CooldownHudOverlay());
         CategoryFixer.fix();
         ClientPlayNetworking.registerGlobalReceiver(KeybindConfigPayload.ID, (payload, context) -> {
@@ -48,6 +49,20 @@ public class InputEngineClient implements ClientModInitializer {
                                 data.defaultKey(),
                                 "category.inputengine.keys"
                         );
+                        
+                        String serverIp = "singleplayer";
+                        if (MinecraftClient.getInstance().getCurrentServerEntry() != null) {
+                            serverIp = MinecraftClient.getInstance().getCurrentServerEntry().address;
+                        }
+                        String savedKey = dev.darkblade.mod.input_engine.common.ServerKeybindStore.getSavedKey(serverIp, data.actionId());
+                        if (savedKey != null) {
+                            try {
+                                keyBinding.setBoundKey(InputUtil.fromTranslationKey(savedKey));
+                            } catch (Exception e) {
+                                // ignore
+                            }
+                        }
+
                         dynamicKeyBindings.put(data.actionId(), keyBinding);
                         
                         KeyState state = new KeyState();
@@ -55,7 +70,7 @@ public class InputEngineClient implements ClientModInitializer {
                         keyStates.put(data.actionId(), state);
                         
                         if (data.translations() != null && !data.translations().isEmpty()) {
-                            DYNAMIC_TRANSLATIONS.put(data.translationKey(), data.translations());
+                            DYNAMIC_TRANSLATIONS.putAll(data.translations());
                         }
                         
                         MinecraftClient client = MinecraftClient.getInstance();
