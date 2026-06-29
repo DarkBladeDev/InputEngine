@@ -8,11 +8,11 @@ The InputEngine project consists of multiple modules targeting different Minecra
 
 When making changes that affect all loaders, you MUST update ALL relevant modules. The project maintains functional parity between Fabric and NeoForge, with Spigot providing a separate server-side API.
 
-Always consult the [`multi-loader-sync`](.agent/skills/development/multi-loader-sync/SKILL.md) skill for specific API mapping information.
+Always consult the [`multi-loader-sync`](.agents/skills/development/multi-loader-sync/SKILL.md) skill for specific API mapping information.
 
 ## Available Skills
 
-The following skills are available under `.agent/skills/` and should be consulted when their trigger conditions are met.
+The following skills are available under `.agents/skills/` and should be consulted when their trigger conditions are met.
 
 ### 🛠️ Development
 
@@ -41,3 +41,13 @@ The following skills are available under `.agent/skills/` and should be consulte
 | `automation/commit-message` | Standardized Conventional Commits format with project-specific scopes (`fabric`, `neoforge`, `spigot`, `common`, etc.). | Committing a keybind fix in Fabric — generates `fix(fabric): reset keybind state on player disconnect` instead of a vague message. |
 | `automation/version-bump` | Guide for updating versions in `gradle.properties` following SemVer, with support for independent per-loader versioning. | Preparing a release after adding a new feature — determines which module versions to bump (PATCH vs MINOR) and updates `gradle.properties` accordingly. |
 | `automation/release-checklist` | Complete pre-release checklist: build verification, version checks, changelog updates, artifact validation, and Modrinth publication steps. | Publishing a new version to Modrinth — walks through every step from `./gradlew clean build` to uploading JARs with correct metadata and changelogs. |
+
+## Post-Task Workflow
+
+To ensure quality, proper versioning, and documentation, ALWAYS follow this workflow upon completing a development task (whether it is a complex feature or a simple fix):
+
+1. **User Validation**: Stop and ask the user to verify if the result meets their requirements and the project's quality standards. Do not proceed to commit until the user explicitly confirms.
+2. **Version Bump**: Remember to check and increment the version string of the modified modules in `gradle.properties`. Consult the `automation/version-bump` skill if needed.
+3. **Commit & Document**: Once the user confirms the implementation is correct:
+   - Generate a standardized commit message utilizing the `automation/commit-message` skill and execute the commit process.
+   - Document the changes in their respective changelog utilizing the `automation/changelog-generator` skill.
